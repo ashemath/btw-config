@@ -1,0 +1,12 @@
+#!/bin/env python3
+import argparse,sys;
+sys.path.insert(0, './scripts/');
+import parse_interfaces,parse_isc;
+
+parser = argparse.ArgumentParser(prog="btw-config", conflict_handler="resolve");
+parser.add_argument("-f", "--config", help='The isc dhcpd file to parse.');
+args = parser.parse_args();
+
+parse_interfaces.parse_stickies("input_files/running-config");
+parse_isc.update_isc(args.config);
+

@@ -51,18 +51,12 @@ def write_interface_dict(interfaces,networks):
                 hostmac = hm[0:2]+":"+hm[2:4]+":"+hm[4:6]+":"+hm[6:8]+":"+hm[8:10]+":"+hm[10:12];
                 host = dict(name = hostname, mac = hostmac, port = interface.split(" ")[1]);
                 vlan_sort[vlan].append(host);
+    with open("output_files/vlan_dict.yml", "w") as f:
+        f.write(yaml.dump(vlan_sort));
+        f.close()
     return vlan_sort;
 
-parser = argparse.ArgumentParser(prog="parse_interfaces",conflict_handler='resolve');
-parser.add_argument('-p','--prefix', help='host group identifier prefix. E.g. \'host\'');
-parser.add_argument('-f', '--config', help='running-config to parse.');
-parser.add_argument('-n', '--networks', help='networks.yml to parse.');
-args=parser.parse_args();
-
-interfaces = parse_config(args.config);
-vlan_sort = write_interface_dict(interfaces, args.networks);
-
-with open("output_files/vlan_dict.yml", "w") as f:
-    f.write(yaml.dump(vlan_sort));
-f.close()
+def parse_stickies(rc):
+    interfaces = parse_config(rc);
+    vlan_sort = write_interface_dict(interfaces, "input_files/networks.yml");
 

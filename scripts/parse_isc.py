@@ -182,7 +182,6 @@ def remove_reservations(config):
     cleared = "";
     if (len(host_indexes)==len(end_indexes)):
         group_index = group_indexes[0];
-        #while(data[group_index-1:group_index+1] != "\n\n"):
         while(data[group_index-1] != "\n"):
             group_index -= 1;
         cleared += data[0:group_index];
@@ -205,25 +204,15 @@ def append_reservations(cleared, reservations):
 
 # write_updated_conf
 # write a modified configuration file to output_files/
-def write_updated_conf(cleared, reservations):
+def write_updated_conf(config, cleared, reservations):
     output = append_reservations(cleared, reservations);
-    with open("output_files/" +  args.config.split("/")[-1],"w") as f:
+    with open("output_files/" + config.split("/")[-1],"w") as f:
         f.write(output);
     f.close
 
-parser = argparse.ArgumentParser(prog="parse_isc", conflict_handler="resolve");
-parser.add_argument("-f", "--config", help='The isc dhcpd file to parse.');
-args = parser.parse_args();
-
-explode = read_config(args.config);
-#print(id_vlan_by_ip("192.168.200.9"));
-reservations = all_reservations(explode);
-cleared = remove_reservations(args.config);
-write_updated_conf(cleared, reservations);
-
-
-
-
-
-
+def update_isc(config):
+    explode = read_config(config);
+    reservations = all_reservations(explode);
+    cleared = remove_reservations(config);
+    write_updated_conf(config, cleared, reservations);
 
