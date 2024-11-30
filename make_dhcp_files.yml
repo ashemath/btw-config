@@ -1,0 +1,24 @@
+---
+- name: Make DHCP files
+  hosts: localhost
+  vars:
+    prefix: "pc"
+
+# We'll use jinja2 templating to build both isc-dhcp and kea-dhcp config files.
+# The example/sample yaml files have example variables set in networks.yml
+# Ansible will run parse_interfaces.py looking for a "running-config"
+
+  tasks:
+    - name: Parse the interfaces
+      command:
+        cmd: "./scripts/parse_interfaces.py \
+              -f input_files/running-config \
+              -p {{ prefix }} -n input_files/networks.yml"
+    - name: import vlan_dict
+      include_vars:
+        file: output_files/vlan_dict.yml
+        name: vlan_dict
+    - name: Debug vlan_dict
+      debug:
+        msg: "{{ vlan_dict[item] }}"
+      loop: "{{ vlan_dict.keys() }}"

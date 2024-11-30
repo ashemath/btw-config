@@ -1,0 +1,18 @@
+vlan 6:
+  prefix: "BB8"
+  name: other
+  network: 192.168.200.0/24
+  start_ip: 192.168.200.3
+  stop_ip: 192.168.200.100
+vlan 16:
+  prefix: "R2D2"
+  name: new
+  network: 172.16.0.0/24
+  start_ip: 172.16.0.3
+  stop_ip: 172.16.0.100
+vlan 42:
+  prefix: "C3PO"
+  name: test
+  network: 192.168.100.0/24
+  start_ip: 192.168.100.3
+  stop_ip: 192.168.100.100
