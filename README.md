@@ -1,6 +1,14 @@
 # btw-config
+It started with wanting a script to collate the sticky'd MACs in a given VLAN,
+and devolved into trying to make DHCP configuration. Gathering sticky's was
+fun. Automating DHCP configuration has been a fun thought experiment.
 
+Staus: Need to make a btw-config script and write the kea-dhcp parser.
+I am excited about Kea's JSON data format. Hopefully, I can be more precise
+than I was with ISC (Which will work iff there is a blank line ahead of existing
+host reservations, as is customary, not necessarily convention).
 
+## Idea
 Let's generate DHCP configuration file based on a simple variable file.
 Reservations based on the MAC address I see sticky'd with Cisco's 
 `switchport port-security mac-address sticky`. 
@@ -90,9 +98,10 @@ This script reads the running-config and outputs to `output_files/vlan_dict.yml`
 `prefix`, we can name whatever room/building/etc we want added to the
 hostname. For example, prefix="JK867" for Room 867 of the Joseph Kibbles facility.
 
-## scrips/parse_isc.py
+## scripts/parse_isc.py
 This file works off of isc-dhcp-server dhcpd.conf file to add host reservations based on the
 vlan_dict.yml output file from `parse_interfaces.py`. The script parses the existing IPv4 host
 reservations, stores them in a dictionary, and compiles new groups of host reservations into
 a new file under `output_files/`.
+
 
