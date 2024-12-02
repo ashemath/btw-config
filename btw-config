@@ -1,0 +1,30 @@
+#!/bin/env python3
+import argparse,sys;
+sys.path.insert(0, './scripts/');
+import parse_interfaces,parse_isc,parse_kea;
+
+parser = argparse.ArgumentParser(prog="btw-config", conflict_handler="resolve");
+
+# Tie into our three scripts
+parser.add_argument("--isc", action='store_true');
+parser.add_argument("--kea", action='store_true');
+parser.add_argument("--stickies", action='store_true');
+
+# Accept a cisco config file and/or a dhcpd configuration file
+parser.add_argument("-f", "--config", help='The dhcpd file to parse.');
+parser.add_argument("-r", "--rc", help='The running-config file to parse.');
+
+# Parse arguments and run submodules
+args = parser.parse_args();
+
+# Update stickies.yml if running-config is supplied
+if (args.stickies):
+    parse_interfaces.parse_stickies(args.rc);
+    print("output_files/stickies.yml updated from: " + args.rc);
+
+if (args.isc):
+    out_name = parse_isc.write_updated_conf(args.config);
+    print(out_name + " created from " + args.config);
+elif (args.kea):
+    out_name = parse_kea.write_updated_config(args.config);
+    print(out_name + " created from " + args.config);

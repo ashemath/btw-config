@@ -1,0 +1,24 @@
+{
+	"id": 1,
+	"subnet": "192.168.100.0/24",
+	"pools": [ { "pool": "192.168.100.100 - 192.168.100.149" } ],
+	"option-data": [
+	{
+		"name": "routers",
+		"data": "192.168.100.2"
+	}
+	],
+	"reservations":
+	[
+		{ 
+			"hw-address": "1a:1b:1c:1d:1e:ff",
+			"ip-address": "192.168.100.3",
+			"hostname": "C3PO00"
+		    },
+		    {
+			    "hw-address": "01:11:22:33:44:55",
+			    "ip-address": "192.168.100.4",
+			    "hostname": "C3PO01"
+		    }
+	    ]
+}

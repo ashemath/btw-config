@@ -72,10 +72,12 @@ I'll already have dhcp zone files for isc-dhcp-server and kea-dhcp, ending in .c
 respectively. I want to load the dhcp config file, load the reservations into Python, and fill
 in DHCP reservations for MAC addresses that are not present in the DHCP configuration.
 
-I want to run:
+## btw-config usage
+
+We can run:
 
 ```sh
-btw-config --kea other.json --config running-config
+btw-config --kea --config other.json --rc running-config
 ```
 
 to update other.json.
@@ -83,10 +85,11 @@ to update other.json.
 or for isc-dhcp-server:
 
 ```sh
-btw-config --isc other.conf --config running-config
+btw-config --isc --config other.conf --rc running-config
 ```
 to update other.conf
 
+## Design goals
 The goals are to produce:
 - Both kea-dhcp and isc-dhcp subnet configuration.
 - single .yml variable output file, for automating other tasks.
@@ -99,9 +102,12 @@ This script reads the running-config and outputs to `output_files/vlan_dict.yml`
 hostname. For example, prefix="JK867" for Room 867 of the Joseph Kibbles facility.
 
 ## scripts/parse_isc.py
-This file works off of isc-dhcp-server dhcpd.conf file to add host reservations based on the
-vlan_dict.yml output file from `parse_interfaces.py`. The script parses the existing IPv4 host
+This script works off of isc-dhcp-server dhcpd.conf file to add host reservations based on the
+stickies.yml output file from `parse_interfaces.py`. The script parses the existing IPv4 host
 reservations, stores them in a dictionary, and compiles new groups of host reservations into
 a new file under `output_files/`.
 
+## scripts/parse_kea.py
+This script also works between dhcp configuration file and the stickies.yml output from
+parse_interfaces.py
 

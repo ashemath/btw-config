@@ -43,7 +43,7 @@ def get_vlans():
     return networks;
 
 def get_stickies():
-    with open("output_files/vlan_dict.yml","r") as f:
+    with open("output_files/stickies.yml","r") as f:
         stickies = yaml.safe_load(f);
     f.close()
     return stickies;
@@ -56,7 +56,7 @@ def id_vlan_by_ip(word):
     for network in networks.keys():
         subnet = ipaddress.IPv4Network(networks[network]["network"]);
         nets.append(dict(name=network,network=subnet));
-    ip_pattern = re.compile("\d{1,4}.\d{1,4}.\d{1,4}.\d{1,4};?");
+    ip_pattern = re.compile(r"\d{1,4}.\d{1,4}.\d{1,4}.\d{1,4};?");
     if (ip_pattern.match(word)):
         hostip=ipaddress.IPv4Network(word);
     for net in nets:
@@ -80,8 +80,8 @@ def get_existing_reservations(explode):
     prefix_patterns=[];
     for prefix in prefixes:
         prefix_patterns.append(re.compile(prefix+".*"));
-    mac_pattern = re.compile("\w\w:\w\w:\w\w:\w\w:\w\w:\w\w");
-    ip_pattern = re.compile("\d{1,4}.\d{1,4}.\d{1,4}.\d{1,4};?");
+    mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w");
+    ip_pattern = re.compile(r"\d{1,4}.\d{1,4}.\d{1,4}.\d{1,4};?");
     id_check = False;
     for stripped in explode:
         word = stripped.strip();
@@ -139,7 +139,7 @@ def make_reservations(existing):
 def next_hostname(prefix,hostname):
     prefix_end = len(prefix);
     serial = int(hostname[prefix_end:]);
-    return prefix+str(serial + 1);
+    return prefix+f"{serial + 1:02d}";
 
 # combine "existing" reservations from the file with reservations we would
 # like from the sticky'd acess ports.
@@ -205,21 +205,27 @@ def append_reservations(cleared, reservations):
 
 # write_updated_conf
 # write a modified configuration file to output_files/
-def write_updated_conf(cleared, reservations):
+def write_updated_conf(config):
+    explode = read_config(config);
+    cleared = remove_reservations(config);
+    existing = get_existing_reservations(explode);
+    reservations = make_reservations(existing);
     output = append_reservations(cleared, reservations);
-    with open("output_files/" +  args.config.split("/")[-1],"w") as f:
+    out_name = "output_files/"+config.split("/")[-1];
+    with open(out_name,"w") as f:
         f.write(output);
     f.close
+    return out_name;
 
-parser = argparse.ArgumentParser(prog="parse_isc", conflict_handler="resolve");
-parser.add_argument("-f", "--config", help='The isc dhcpd file to parse.');
-args = parser.parse_args();
+#parser = argparse.ArgumentParser(prog="parse_isc", conflict_handler="resolve");
+#parser.add_argument("-f", "--config", help='The isc dhcpd file to parse.');
+#args = parser.parse_args();
 
-explode = read_config(args.config);
+#explode = read_config(args.config);
 #print(id_vlan_by_ip("192.168.200.9"));
-reservations = all_reservations(explode);
-cleared = remove_reservations(args.config);
-write_updated_conf(cleared, reservations);
+#reservations = all_reservations(explode);
+#cleared = remove_reservations(args.config);
+#write_updated_conf(cleared, reservations);
 
 
 
